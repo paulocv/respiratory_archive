@@ -43,7 +43,7 @@ jobs:
       - name: Run the script
         run: |
             echo "Running python script to fetch NHSN data"
-            python get_nhsn_snapshots.py
+            python get_nhsn_snapshot.py
 
       - name: Commit changes
         uses: EndBug/add-and-commit@v9

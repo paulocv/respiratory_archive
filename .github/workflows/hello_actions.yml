@@ -25,7 +25,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      # Install and configure python
       - name: Set up Python 3.13
         uses: actions/setup-python@v3
         with:
@@ -37,8 +36,16 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # Runs a single command using the runners shell
       - name: Run the script
         run: |
             echo "Running your python script:"
             python hello.py
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: datasets  # Select which files to commit
+          message: "Commit outputs from `hello.py`"
+#          default_author: github_actor
+          push: true
+

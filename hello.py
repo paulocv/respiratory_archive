@@ -1,6 +1,8 @@
 """Goal: test GitHub workflows to run python"""
 
 import argparse
+import os
+from pathlib import Path
 
 import pandas as pd
 
@@ -12,5 +14,6 @@ df = pd.DataFrame([[1, 2, 3], [4, 5, 1000]])
 print(df)
 
 # --- Write current date and time into a file
-with open("datasets/hello_out.txt", "w") as fp:
+os.makedirs("datasets", exist_ok=True)
+with open(Path("datasets/hello_out.txt"), "w") as fp:
     fp.write(f"Hello. It's {pd.Timestamp.now().isoformat()}\n")

@@ -3,11 +3,12 @@
 import argparse
 import os
 import shutil
+from multiprocessing.managers import Value
 from pathlib import Path
 
 import pandas as pd
 
-from utils.nhsn_data import fetch_nhsn_hosp_data
+from utils.nhsn_data import fetch_nhsn_hosp_data, get_latest_nhsn_url, get_data_url
 
 
 # ===============
@@ -16,18 +17,16 @@ from utils.nhsn_data import fetch_nhsn_hosp_data
 def main():
     args = parse_args()
 
-    # Params
+    # --- Parameters
     output_dir = Path("./datasets/nhsn_weekly_jurisdiction")
-    preliminary = args.preliminary
+    # preliminary = args.preliminary
+    release = args.release
     now: pd.Timestamp = args.now
-    is_latest = args.is_latest
+    save_latest = args.save_latest
 
     # ----
 
-    if preliminary:
-        url = "https://data.cdc.gov/resource/mpgq-jmmr.json"
-    else:
-        url = "https://data.cdc.gov/resource/ua7e-t2fy.json"
+    url = choose_data_url(release)
 
     nhsn_df = fetch_nhsn_hosp_data(
         request_url=url,
@@ -40,7 +39,7 @@ def main():
     nhsn_df.to_csv(arch_fname)
     print("Exporting done.")
 
-    if is_latest:
+    if save_latest:
         latest_fname = output_dir / f"nhsn_latest.csv"
         print(f"Exporting to {latest_fname}...")
         shutil.copy2(
@@ -53,17 +52,17 @@ def main():
 def parse_args():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument(
-        "--preliminary",
-        type=bool,
-        help="Whether to use the preliminary NHSN data instead of the "
-             "consolidated one. The preliminary data is released on"
-             "the Wednsesday before the conosolidate data. While "
-             "incomplete, it provides earlier access to the latest "
-             "time point data.",
-        default=True,
-        action=argparse.BooleanOptionalAction,
-    )
+    # parser.add_argument(
+    #     "--preliminary",
+    #     type=bool,
+    #     help="Whether to use the preliminary NHSN data instead of the "
+    #          "consolidated one. The preliminary data is released on"
+    #          "the Wednsesday before the conosolidate data. While "
+    #          "incomplete, it provides earlier access to the latest "
+    #          "time point data.",
+    #     default=True,
+    #     action=argparse.BooleanOptionalAction,
+    # )
 
     parser.add_argument(
         "--now",
@@ -74,14 +73,35 @@ def parse_args():
     )
 
     parser.add_argument(
-        "--is-latest",
+        "--release", "-r",
+        type=str,
+        help="Which release of the NHSN respiratory data should be "
+             "fetched: consolidated (Friday release), preliminary "
+             "(Wednesday release) or latest available. Defaults to latest.",
+        choices=["latest", "preliminary", "prelim", "consolidated", "consol"],
+        default="latest",
+    )
+
+    parser.add_argument(
+        "--save-latest",
         type=bool,
-        help="Whether the fetched data is considered latest and thus "
-             "must be saved as 'latest.csv'",
+        help="Whether the fetched data should be saved as 'latest.csv'",
         default=True,
     )
 
     return parser.parse_args()
+
+
+def choose_data_url(release):
+    if release in ["prelim", "preliminary"]:
+        return get_data_url("preliminary")
+    elif release in ["consol", "consolidated"]:
+        return get_data_url("consolidated")
+    elif release in ["latest"]:
+        return get_latest_nhsn_url()
+    else:
+        raise ValueError(
+            f"Unrecognized value for parameter `release`: {release}")
 
 
 if __name__ == "__main__":

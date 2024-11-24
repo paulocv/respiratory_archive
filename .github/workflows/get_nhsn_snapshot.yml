@@ -43,13 +43,13 @@ jobs:
       - name: Run the script
         run: |
             echo "Running python script to fetch NHSN data"
-            python get_nhsn_snapshot.py
+            python get_nhsn_snapshot.py --release latest
 
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
           add: datasets/nhsn_weekly_jurisdiction  # Select which files to commit
-          message: "Save NHSN snapshot $DATE"
+          message: "Save NHSN snapshot"
 #          default_author: github_actor
           push: true
 

@@ -35,6 +35,33 @@ import requests
 import pandas as pd
 
 
+# --- Data URLs
+_NHSN_DATA_REQUEST_FMT = "https://data.cdc.gov/resource/{uuid}.json"
+_NHSN_METADATA_REQUEST_FMT = "https://data.cdc.gov/api/views/metadata/v1/{uuid}"
+_UUID_CONSOLIDATED = "ua7e-t2fy"
+_UUID_PRELIMINARY = "mpgq-jmmr"
+
+
+def get_data_url(release):
+    if release in ["prelim", "preliminary"]:
+        return _NHSN_DATA_REQUEST_FMT.format(uuid=_UUID_PRELIMINARY)
+    elif release in ["consol", "consolidated"]:
+        return _NHSN_DATA_REQUEST_FMT.format(uuid=_UUID_CONSOLIDATED)
+    else:
+        raise ValueError(
+            f"Unrecognized value for parameter `release`: {release}")
+
+
+def get_metadata_url(release):
+    if release in ["prelim", "preliminary"]:
+        return _NHSN_METADATA_REQUEST_FMT.format(uuid=_UUID_PRELIMINARY)
+    elif release in ["consol", "consolidated"]:
+        return _NHSN_METADATA_REQUEST_FMT.format(uuid=_UUID_CONSOLIDATED)
+    else:
+        raise ValueError(
+            f"Unrecognized value for parameter `release`: {release}")
+
+
 # --- Conversion from disease names to NHSN new hosp. admission fields
 _DISEASE_TO_NEWADM_FIELD = {
     "covid": "totalconfc19newadm",
@@ -67,6 +94,50 @@ _INTEREST_NHSN_FIELDS += [
         "unk",   # Unknown age
     ]
 ]
+
+
+def get_latest_nhsn_url() -> str:
+    """Determines which release (preliminary or consolidated) of the
+    NHSN data was updated most recently and returns its URL.
+    """
+    # Querry each dataset for the last updated date
+    prelim_response = send_and_check_request(get_metadata_url("prelim"))
+    prelim_json = prelim_response.json()
+    prelim_date_str = prelim_json["dataUpdatedAt"]
+    prelim_date = pd.Timestamp(prelim_date_str)
+
+    consol_response = send_and_check_request(get_metadata_url("consol"))
+    consol_json = consol_response.json()
+    consol_date_str = consol_json["dataUpdatedAt"]
+    consol_date = pd.Timestamp(consol_date_str)
+
+    # Pick the latest, return the proper URL
+    if prelim_date > consol_date:
+        return get_data_url("preliminary")
+    else:
+        return get_data_url("consolidated")
+
+
+def send_and_check_request(request_url, request_params=None) -> requests.Response:
+    print(f"Requesting from {request_url}...")
+    try:
+        response = requests.get(request_url, params=request_params)
+    except requests.exceptions.RequestException as err:
+        raise Exception(
+            f"An error ({err.__class__.__name__}) occurred during the request:\n{str(err)}"
+        )
+
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as http_err:
+        raise requests.exceptions.HTTPError(
+            f"An HTTP error occurred: {http_err}\n"
+            f"Response content: {response.text}"
+        )
+    else:
+        print("Request successful")
+
+    return response
 
 
 def fetch_nhsn_hosp_data(
@@ -127,23 +198,25 @@ def fetch_nhsn_hosp_data(
 
     # Send request to the API
     # ========================
-    print("Requesting data...")
-    try:
-        response = requests.get(request_url, params=request_params)
-    except requests.exceptions.RequestException as err:
-        raise Exception(
-            f"An error ({err.__class__.__name__}) occurred during the request:\n{str(err)}"
-        )
-
-    try:
-        response.raise_for_status()
-    except requests.exceptions.HTTPError as http_err:
-        raise requests.exceptions.HTTPError(
-            f"An HTTP error occurred: {http_err}\n"
-            f"Response content: {response.text}"
-        )
-    else:
-        print("Request successful")
+    response = send_and_check_request(request_url, request_params)
+    # print(f"Requesting from {request_url}...")
+    # try:
+    #     response = requests.get(request_url, params=request_params)
+    # except requests.exceptions.RequestException as err:
+    #     raise Exception(
+    #         f"An error ({err.__class__.__name__}) occurred during the request:\n{str(err)}"
+    #     )
+    #
+    # try:
+    #     response.raise_for_status()
+    # except requests.exceptions.HTTPError as http_err:
+    #     raise requests.exceptions.HTTPError(
+    #         f"An HTTP error occurred: {http_err}\n"
+    #         f"Response content: {response.text}"
+    #     )
+    # else:
+    #     print("Request successful")
+    #
 
     # PARSE THE RESPONSE
     # ==================
@@ -365,14 +438,6 @@ if __name__ == "__main__":
             print(f"Exporting NHSN data to {fpath}...")
             fpath.parent.mkdir(parents=True, exist_ok=True)
             nhsn_df.to_csv(fpath, index=False)
-
-        # if args.export_truth:
-        #     truth_df = make_target_data_from_nhsn(nhsn_df, disease=args.disease)
-        #
-        #     fpath: Path = args.truth_file
-        #     print(f"Exporting target data to {fpath}...")
-        #     fpath.parent.mkdir(parents=True, exist_ok=True)
-        #     truth_df.to_csv(fpath, index=False)
 
         return
 

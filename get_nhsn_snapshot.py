@@ -36,7 +36,7 @@ def main():
     arch_fname = output_dir / f"nhsn_{now.date().isoformat()}.csv"
     print(f"Exporting to {arch_fname}...")
     output_dir.mkdir(parents=True, exist_ok=True)
-    nhsn_df.to_csv(arch_fname)
+    nhsn_df.to_csv(arch_fname, index=False)
     print("Exporting done.")
 
     if save_latest:

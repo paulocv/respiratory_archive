@@ -45,7 +45,9 @@ def main():
     )
 
     if export:
-        filename = f"nhsn_{now.date().isoformat()}.csv"
+        # filename = f"nhsn_{now.date().isoformat()}.csv"
+        date_str = pd.Timestamp(nhsn_metadata['dataUpdatedAt']).date().isoformat()
+        filename = f"nhsn_{date_str}.csv"
         arch_fpath = output_dir / filename
         print(f"Exporting to {arch_fpath}...")
         if arch_fpath.exists():

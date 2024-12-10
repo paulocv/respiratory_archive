@@ -17,31 +17,35 @@ files:
   fetched_on: 2024-11-24
   filename: nhsn_2024-11-24.csv
   release: consol
-- comments: ""
+- comments: ''
   data_updated_at: 2024-11-27
   fetch_trigger: manual_github
   fetched_on: 2024-11-27
   filename: nhsn_2024-11-27.csv
   release: prelim
-- comments: ""
+- comments: ''
   data_updated_at: 2024-11-29
   fetch_trigger: manual_github
   fetched_on: 2024-12-02
   filename: nhsn_2024-12-02.csv
   release: consol
-
-- comments: ""
+- comments: ''
   data_updated_at: 2024-12-04
   fetch_trigger: manual_github
   fetched_on: 2024-12-04
   filename: nhsn_2024-12-04.csv
   release: prelim
-- comments: ""
+- comments: ''
   data_updated_at: 2024-12-06
   fetch_trigger: manual_github
   fetched_on: 2024-12-07
   filename: nhsn_2024-12-07.csv
   release: consol
-
-last_updated: '2024-12-10T11:36:35.097923-05:00'
+- comments: ''
+  data_updated_at: 2024-12-06T17:13:02+0000
+  fetch_trigger: manual
+  fetched_on: '2024-12-10T11:56:24.564510-05:00'
+  filename: nhsn_2024-12-06.csv
+  release: consol
+last_updated: '2024-12-10T11:56:24.564510-05:00'
 license: Public Domain U.S. Government

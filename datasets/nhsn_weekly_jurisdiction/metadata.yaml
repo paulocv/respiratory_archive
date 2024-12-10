@@ -1,0 +1,13 @@
+dataset_name: "Weekly Hospital Respiratory Data (HRD) Metrics by Jurisdiction, National Healthcare Safety Network (NHSN)"
+last_updated: 2024-12-06T13:52:22Z
+attribution: "CDC Division of Healthcare Quality Promotion (DHQP) Surveillance Branch, National Healthcare Safety Network (NHSN)"
+attribution_link: https://www.cdc.gov/nhsn/psc/hospital-respiratory-reporting.html
+license: Public Domain U.S. Government
+
+files:
+  - filename: "data_2024-12-01.csv"
+    fetched_on: "2024-12-01"
+    fetch_trigger: "scheduled_sun"
+  - filename: "data_2024-12-05.csv"
+    fetched_on: "2024-12-05"
+    feetch_trigger: "manual"

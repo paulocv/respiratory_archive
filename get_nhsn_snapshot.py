@@ -4,6 +4,7 @@ import argparse
 import os
 import shutil
 from pathlib import Path
+import warnings
 
 import pandas as pd
 
@@ -24,6 +25,9 @@ def main():
     save_latest = args.save_latest
     export: bool = args.export
 
+    if not export:
+        warnings.warn("The --export switch is off. No outputs will be generated.")
+
     # ----
 
     url = choose_data_url(release)
@@ -33,20 +37,21 @@ def main():
         parse_dates=True,
     )
 
-    arch_fname = output_dir / f"nhsn_{now.date().isoformat()}.csv"
-    print(f"Exporting to {arch_fname}...")
-    output_dir.mkdir(parents=True, exist_ok=True)
-    nhsn_df.to_csv(arch_fname, index=False)
-    print("Exporting done.")
+    if export:
+        arch_fname = output_dir / f"nhsn_{now.date().isoformat()}.csv"
+        print(f"Exporting to {arch_fname}...")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        nhsn_df.to_csv(arch_fname, index=False)
+        print("Exporting done.")
 
-    if save_latest:
-        latest_fname = output_dir / f"nhsn_latest.csv"
-        print(f"Exporting to {latest_fname}...")
-        shutil.copy2(
-            src=arch_fname,
-            dst=latest_fname,
-        )
-        print("Exporting done")
+        if save_latest:
+            latest_fname = output_dir / f"nhsn_latest.csv"
+            print(f"Exporting to {latest_fname}...")
+            shutil.copy2(
+                src=arch_fname,
+                dst=latest_fname,
+            )
+            print("Exporting done")
 
 
 def parse_args():

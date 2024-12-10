@@ -42,6 +42,7 @@ jobs:
 
       - name: Run the script
         run: |
+            echo "Triggered event: ${{github.event.action}}"
             echo "Running python script to fetch NHSN data"
             python get_nhsn_snapshot.py --release latest
 

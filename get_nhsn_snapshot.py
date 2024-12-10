@@ -11,6 +11,7 @@ import pandas as pd
 from utils.nhsn_data import (
     fetch_nhsn_hosp_data, get_latest_nhsn_url_and_metadata, get_data_url, send_and_check_request, get_metadata_url
 )
+from utils.yaml_tools import load_yaml, save_yaml
 
 
 # ===============
@@ -26,13 +27,17 @@ def main():
     now: pd.Timestamp = args.now
     save_latest = args.save_latest
     export: bool = args.export
+    update_metadata: bool = args.update_metadata
 
     if not export:
         warnings.warn("The --export switch is off. No outputs will be generated.")
 
     # ----
+
+    dataset_metadata = load_yaml(output_dir / "metadata.yaml")
+
     # Decide which data release to fetch and get NHSN metadata
-    url, metadata_dict, release = choose_data_url_and_get_metadata(arg_release)
+    url, nhsn_metadata, release = choose_data_url_and_get_metadata(arg_release)
 
     nhsn_df = fetch_nhsn_hosp_data(
         request_url=url,
@@ -40,20 +45,42 @@ def main():
     )
 
     if export:
-        arch_fname = output_dir / f"nhsn_{now.date().isoformat()}.csv"
-        print(f"Exporting to {arch_fname}...")
+        filename = f"nhsn_{now.date().isoformat()}.csv"
+        arch_fpath = output_dir / filename
+        print(f"Exporting to {arch_fpath}...")
+        if arch_fpath.exists():
+            warnings.warn(f"{arch_fpath} already exists and will be overwritten.")
         output_dir.mkdir(parents=True, exist_ok=True)
-        nhsn_df.to_csv(arch_fname, index=False)
+        nhsn_df.to_csv(arch_fpath, index=False)
         print("Exporting done.")
 
         if save_latest:
             latest_fname = output_dir / f"nhsn_latest.csv"
             print(f"Exporting to {latest_fname}...")
             shutil.copy2(
-                src=arch_fname,
+                src=arch_fpath,
                 dst=latest_fname,
             )
-            print("Exporting done")
+            print("Exporting done.")
+
+        if update_metadata:
+            # I'll write everything here because there are many arguments. Then I'll put in a function.
+            entry = dict(
+                filename=filename,
+                fetched_on=now.isoformat(),
+                data_updated_at=nhsn_metadata["dataUpdatedAt"],
+                fetch_trigger=args.fetch_trigger,
+                release=release,
+                comments="",
+            )
+
+            # Update general fields
+            dataset_metadata["last_updated"] = now.isoformat()
+
+            print(f"Exporting metadata...")
+            dataset_metadata["files"].append(entry)
+            save_yaml(output_dir / "metadata.yaml", dataset_metadata)
+            print("Exporting done.")
 
 
 def parse_args():
@@ -93,6 +120,13 @@ def parse_args():
     )
 
     parser.add_argument(
+        "--update-metadata",
+        help="Whether to update the metadata if new data is fetched.",
+        action=argparse.BooleanOptionalAction,
+        default=True
+    )
+
+    parser.add_argument(
         "--fetch-trigger",
         type=str,
         help="Specifies the event that triggered the data fetch request, "
@@ -119,6 +153,12 @@ def choose_data_url_and_get_metadata(release):
             f"Unrecognized value for parameter `release`: {release}")
 
     return url, metadata_dict, release
+
+
+def make_nhsn_file_metadata():
+    """Create an entry in the metadata file for the NHSN data."""
+
+    # return
 
 
 if __name__ == "__main__":

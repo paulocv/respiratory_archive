@@ -3,7 +3,6 @@
 import argparse
 import os
 import shutil
-from multiprocessing.managers import Value
 from pathlib import Path
 
 import pandas as pd
@@ -23,6 +22,7 @@ def main():
     release = args.release
     now: pd.Timestamp = args.now
     save_latest = args.save_latest
+    export: bool = args.export
 
     # ----
 
@@ -83,9 +83,17 @@ def parse_args():
     )
 
     parser.add_argument(
+        "--export",
+        action=argparse.BooleanOptionalAction,
+        help="Whether to produce any outputs to files. Use `--no-export` "
+             "to suppress outputs.",
+        default=True,
+    )
+
+    parser.add_argument(
         "--save-latest",
         type=bool,
-        help="Whether the fetched data should be saved as 'latest.csv'",
+        help="Whether the fetched data should also be saved as 'latest.csv'",
         default=True,
     )
 

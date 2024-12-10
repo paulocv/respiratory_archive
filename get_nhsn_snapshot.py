@@ -8,7 +8,9 @@ import warnings
 
 import pandas as pd
 
-from utils.nhsn_data import fetch_nhsn_hosp_data, get_latest_nhsn_url, get_data_url
+from utils.nhsn_data import (
+    fetch_nhsn_hosp_data, get_latest_nhsn_url_and_metadata, get_data_url, send_and_check_request, get_metadata_url
+)
 
 
 # ===============
@@ -20,7 +22,7 @@ def main():
     # --- Parameters
     output_dir = Path("./datasets/nhsn_weekly_jurisdiction")
     # preliminary = args.preliminary
-    release = args.release
+    arg_release: str = args.release
     now: pd.Timestamp = args.now
     save_latest = args.save_latest
     export: bool = args.export
@@ -29,8 +31,8 @@ def main():
         warnings.warn("The --export switch is off. No outputs will be generated.")
 
     # ----
-
-    url = choose_data_url(release)
+    # Decide which data release to fetch and get NHSN metadata
+    url, metadata_dict, release = choose_data_url_and_get_metadata(arg_release)
 
     nhsn_df = fetch_nhsn_hosp_data(
         request_url=url,
@@ -56,18 +58,6 @@ def main():
 
 def parse_args():
     parser = argparse.ArgumentParser()
-
-    # parser.add_argument(
-    #     "--preliminary",
-    #     type=bool,
-    #     help="Whether to use the preliminary NHSN data instead of the "
-    #          "consolidated one. The preliminary data is released on"
-    #          "the Wednsesday before the conosolidate data. While "
-    #          "incomplete, it provides earlier access to the latest "
-    #          "time point data.",
-    #     default=True,
-    #     action=argparse.BooleanOptionalAction,
-    # )
 
     parser.add_argument(
         "--now",
@@ -102,19 +92,33 @@ def parse_args():
         default=True,
     )
 
+    parser.add_argument(
+        "--fetch-trigger",
+        type=str,
+        help="Specifies the event that triggered the data fetch request, "
+             "to include in the file metadata.",
+        default="manual",
+    )
+
     return parser.parse_args()
 
 
-def choose_data_url(release):
+def choose_data_url_and_get_metadata(release):
     if release in ["prelim", "preliminary"]:
-        return get_data_url("preliminary")
+        url = get_data_url("prelim")
+        release = "prelim"
+        metadata_dict = send_and_check_request(get_metadata_url("prelim")).json()
     elif release in ["consol", "consolidated"]:
-        return get_data_url("consolidated")
+        url = get_data_url("consol")
+        release = "consol"
+        metadata_dict = send_and_check_request(get_metadata_url("consol")).json()
     elif release in ["latest"]:
-        return get_latest_nhsn_url()
+        url, metadata_dict, release = get_latest_nhsn_url_and_metadata()
     else:
         raise ValueError(
             f"Unrecognized value for parameter `release`: {release}")
+
+    return url, metadata_dict, release
 
 
 if __name__ == "__main__":

@@ -96,9 +96,10 @@ _INTEREST_NHSN_FIELDS += [
 ]
 
 
-def get_latest_nhsn_url() -> str:
+def get_latest_nhsn_url_and_metadata() -> str:
     """Determines which release (preliminary or consolidated) of the
-    NHSN data was updated most recently and returns its URL.
+    NHSN data was updated most recently and returns its URL and metadata
+    as a dictionary (parsed from the JSON metadata).
     """
     # Querry each dataset for the last updated date
     prelim_response = send_and_check_request(get_metadata_url("prelim"))
@@ -113,9 +114,9 @@ def get_latest_nhsn_url() -> str:
 
     # Pick the latest, return the proper URL
     if prelim_date > consol_date:
-        return get_data_url("preliminary")
+        return get_data_url("preliminary"), prelim_json, "prelim"
     else:
-        return get_data_url("consolidated")
+        return get_data_url("consolidated"), consol_json, "consol"
 
 
 def send_and_check_request(request_url, request_params=None) -> requests.Response:
@@ -199,24 +200,6 @@ def fetch_nhsn_hosp_data(
     # Send request to the API
     # ========================
     response = send_and_check_request(request_url, request_params)
-    # print(f"Requesting from {request_url}...")
-    # try:
-    #     response = requests.get(request_url, params=request_params)
-    # except requests.exceptions.RequestException as err:
-    #     raise Exception(
-    #         f"An error ({err.__class__.__name__}) occurred during the request:\n{str(err)}"
-    #     )
-    #
-    # try:
-    #     response.raise_for_status()
-    # except requests.exceptions.HTTPError as http_err:
-    #     raise requests.exceptions.HTTPError(
-    #         f"An HTTP error occurred: {http_err}\n"
-    #         f"Response content: {response.text}"
-    #     )
-    # else:
-    #     print("Request successful")
-    #
 
     # PARSE THE RESPONSE
     # ==================

@@ -53,5 +53,11 @@ files:
   fetched_on: '2024-12-11T13:48:30.587016-05:00'
   filename: nhsn_2024-12-11.csv
   release: prelim
-last_updated: '2024-12-11T13:48:30.587016-05:00'
+- comments: ''
+  data_updated_at: 2024-12-13T17:07:45+0000
+  fetch_trigger: manual
+  fetched_on: '2024-12-16T08:53:18.749042-05:00'
+  filename: nhsn_2024-12-13.csv
+  release: consol
+last_updated: '2024-12-16T08:53:18.749042-05:00'
 license: Public Domain U.S. Government

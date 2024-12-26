@@ -77,7 +77,7 @@ files:
   fetched_on: '2024-12-26T08:05:57.825066-05:00'
   filename: nhsn_2024-12-23.csv
   release: prelim
-- comments: ''
+- comments: Preliminary data updated on Thursday following Christmas.
   data_updated_at: 2024-12-26T14:38:41+0000
   fetch_trigger: manual
   fetched_on: '2024-12-26T10:24:40.715390-05:00'

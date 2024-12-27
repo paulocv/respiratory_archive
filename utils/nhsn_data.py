@@ -73,6 +73,12 @@ _DISEASE_TO_NEWADM_FIELD = {
     "rsv": "totalconfrsvnewadm",
 }
 
+DISEASE_CODE3_TO_NAME = {
+    "c19": "COVID-19",
+    "flu": "Influenza",
+    "rsv": "RSV",
+}
+
 _INTEREST_NHSN_FIELDS = list()
 
 

@@ -1,0 +1,30 @@
+
+/* Sets the primary style for everything in the document */
+body {
+  font-family: 'Trebuchet MS', sans-serif;
+  font-size: 17px;
+  color: #3e4349;
+  /*background-color: hsl(187, 15%, 95%);*/
+  /*background-color: hsl(0, 57%, 25%);*/
+}
+
+/* Defines the content area in the document */
+div.document{
+    max-width: 1140px;
+    margin: 50px auto;  /*Top/bottom  Left/right*/
+}
+
+
+/* Master container of tabs */
+.tab-container {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  /*background-color: #f1f1f1;*/
+  background-color: hsl(187, 36%, 95%);
+}
+
+
+/* Here you can customize the style of plotly generated divs */
+div.plotly-graph-div {
+
+}

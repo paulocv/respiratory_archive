@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="./simple_report_style.css">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+  <title>Respiratory Archive Report</title>
+</head>
+
+<body>
+  <div class="document">
+
+  <h1>Respiratory Archive Report – {{ report_date }}</h1>
+
+  <p>
+    Hello world! This page shows snapshots of the National Healthcare Safety Network (NHSN) data
+    on hospitalizations with confirmed respiratory ilnesses. It is part of a small project which
+    aim is to help respiratory disease forecasting in the USA.
+  </p>
+  <p>
+    GitHub repo for this project:
+    <a href="https://github.com/paulocv/respiratory_archive" target="_blank">Respiratory Archive</a>.
+  </p>
+
+  <hr>
+
+<!-- # # # #OPTION: One tab for each disease (TO BE IMPLEMENTED)-->
+<!--  <div class="tab-container">-->
+
+<!--    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, repellat aliquam.</p>-->
+
+<!--    <div id="test-plot">-->
+<!--      {{ test_plot }}-->
+<!--    </div>-->
+
+<!--  </div>-->
+
+<!-- # # # #OPTION: One disease at a time, no tabs-->
+  <h1>Hospitalization time series by "as of" dates</h1>
+
+  <h2>Influenza</h2>
+  <div id="influenza-plot">
+    {{ flu_plot }}
+  </div>
+
+  <h2>COVID-19</h2>
+  <div id="covid-19-plot">
+    {{ c19_plot }}
+  </div>
+
+  <h2>RSV (Respiratory Syncytial Virus)</h2>
+  <div id="rsv-plot">
+    {{ rsv_plot }}
+  </div>
+
+</div>
+
+</body>
+</html>

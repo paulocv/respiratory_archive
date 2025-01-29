@@ -249,10 +249,11 @@ def prepare_plots(params: Params, data: Data):
                 orientation="h",
                 y=1.2
             ),
-            margin=dict(l=0, r=0, t=90, b=40),
+            margin=dict(l=0, r=0, t=60, b=40),
             autosize=False,
             minreducedwidth=400,
             width=800,
+            height=600,
             paper_bgcolor="hsla(187, 36%, 95%, 0)",
             # plot_bgcolor="hsl(187, 36%, 95%)",
         )

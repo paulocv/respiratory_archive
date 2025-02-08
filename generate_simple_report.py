@@ -278,9 +278,6 @@ def prepare_plots(params: Params, data: Data):
         )
         _LOGGER.info(f" - Exported plot for `{code}`")
 
-    # TEST: Simple list of jurisdictions  # TODO: REplace by actual ones? OR build in JS.
-    data.template_fill_dict["jurisdictions"] = ["Foo", "Bar", "Baz"]
-
 
 def fill_templates(params: Params, data: Data):
     _LOGGER.info("Filling templates")

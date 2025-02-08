@@ -28,3 +28,20 @@ div.document{
 div.plotly-graph-div {
 
 }
+
+
+form > select {
+  background-color: white;
+  border-color: #D3E1E6FF;
+  padding: 8px;
+  box-shadow: none;
+  outline: none; /* Remove any outline or border shadow */
+}
+
+form > select, form > input {
+  margin-right: 15px;
+}
+
+form > select:hover  {
+  background-color: #D3E1E6FF;
+}

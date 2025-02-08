@@ -6,6 +6,7 @@ Concepts:
 - as_of_date: Date and time in which the dataset was updated. "As of" date.
 - date: Date of the report, attributed to the hospitalization event.
 """
+import json
 import logging
 import os
 import shutil
@@ -74,6 +75,9 @@ class Data:
 
     template_fill_dict: dict  # Contents that will fill the templates
     index_page_content: str   # HTML content for the index page
+
+    jur_trace_indices: dict  # Indexes of the traces belonging to each location
+    disease_codes: list      # 3-letter disease codes: "flu", "c19", "rsv"
 
     def __init__(self):
         self.template_fill_dict = dict()
@@ -155,8 +159,8 @@ def load_data(params: Params, data: Data):
 def prepare_plots(params: Params, data: Data):
 
     # --- Initialize plots and surrounding data
-    disease_codes = ["c19", "flu", "rsv"]
-    fig_dict = {code: go.Figure() for code in disease_codes}
+    data.disease_codes = ["c19", "flu", "rsv"]
+    fig_dict = {code: go.Figure() for code in data.disease_codes}
 
     num_jurisdictions = len(data.main_archive_df.index.get_level_values("jurisdiction").unique())
 
@@ -165,7 +169,7 @@ def prepare_plots(params: Params, data: Data):
 
     # --- Loop over jurisdictions
     i_trace = 0
-    jur_trace_indices = defaultdict(list)  # Keeps track of the trace indices belonging to each jurisdiction
+    data.jur_trace_indices = defaultdict(list)  # Keeps track of the trace indices belonging to each jurisdiction
     for i_jur, (jur_abbrev, jur_df) in (
             enumerate(data.main_archive_df.groupby(by="jurisdiction", group_keys=False))):
         jur_df = jur_df.droplevel("jurisdiction")
@@ -184,7 +188,7 @@ def prepare_plots(params: Params, data: Data):
             as_of_df = as_of_df.droplevel("as_of_date")
 
             # --- Loop over diseases
-            for disease_code in disease_codes:
+            for disease_code in data.disease_codes:
                 # disease_name = DISEASE_CODE3_TO_NAME[disease_code]
                 hosp_colname = params.hosp_colname_fmt.format(disease_code)
                 fig = fig_dict[disease_code]
@@ -199,7 +203,7 @@ def prepare_plots(params: Params, data: Data):
                 )
 
             # Track the traces belonging to this jurisdiction
-            jur_trace_indices[jur_abbrev].append(i_trace)
+            data.jur_trace_indices[jur_abbrev].append(i_trace)
             i_trace += 1
 
     # Configure plots
@@ -207,35 +211,39 @@ def prepare_plots(params: Params, data: Data):
     _LOGGER.info("Configuring plots")
     num_traces = i_trace
 
-    # --- Loop over jurisdictions to build its dropdown
-    jur_buttons = list()
-    for i_jur, (jur_abbrev, trace_indices) in enumerate(jur_trace_indices.items()):
-        # Define the button, set all traces as invisible
-        button = dict(
-            label=jur_abbrev,
-            method="update",
-            args=[{"visible": np.zeros(num_traces, dtype=bool)}],
-        )
-        # Set selected traces as visible
-        button["args"][0]["visible"][trace_indices] = True
-
-        # Store, ensuring the default comes first
-        if jur_abbrev == params.show_default_jurisd:
-            jur_buttons.insert(0, button)
-        else:
-            jur_buttons.append(button)
-
-    # --- Setup selection dropdowns
-    for fig in fig_dict.values():
-        fig.update_layout(
-            updatemenus=[
-                # --- Jurisdiction selection
-                dict(
-                    buttons=jur_buttons,
-                    name="Jurisdiction"
-                )
-            ],
-        )
+    # # --- Loop over jurisdictions to build its dropdown
+    # jur_buttons = list()
+    # for i_jur, (jur_abbrev, trace_indices) in enumerate(data.jur_trace_indices.items()):
+    #     # # Report progress
+    #     # if i_jur % 10 == 0:
+    #     #     _LOGGER.info(f"Configuring jurisdiction {jur_abbrev} ({i_jur} / {num_jurisdictions})")
+    #
+    #     # Define the button, set all traces as invisible
+    #     button = dict(
+    #         label=jur_abbrev,
+    #         method="update",
+    #         args=[{"visible": np.zeros(num_traces, dtype=bool)}],
+    #     )
+    #     # Set selected traces as visible
+    #     button["args"][0]["visible"][trace_indices] = True
+    #
+    #     # Store, ensuring the default comes first
+    #     if jur_abbrev == params.show_default_jurisd:
+    #         jur_buttons.insert(0, button)
+    #     else:
+    #         jur_buttons.append(button)
+    #
+    # # --- Setup selection dropdowns
+    # for fig in fig_dict.values():
+    #     fig.update_layout(
+    #         updatemenus=[
+    #             # --- Jurisdiction selection
+    #             dict(
+    #                 buttons=jur_buttons,
+    #                 name="Jurisdiction"
+    #             )
+    #         ],
+    #     )
 
     # --- Setup other options
     max_date = data.main_archive_df.index.get_level_values("weekendingdate").max()
@@ -262,8 +270,16 @@ def prepare_plots(params: Params, data: Data):
 
     # Export figure HTML into the template filling contents
     # ==============
+    _LOGGER.info("Exporting plots to HTML...")
     for code, fig in fig_dict.items():
-        data.template_fill_dict[f"{code}_plot"] = fig.to_html(full_html=False, include_plotlyjs=False)
+        data.template_fill_dict[f"{code}_fig"] = fig.to_html(
+            full_html=False, include_plotlyjs=False,
+            div_id=f"{code}-fig-div",
+        )
+        _LOGGER.info(f" - Exported plot for `{code}`")
+
+    # TEST: Simple list of jurisdictions  # TODO: REplace by actual ones? OR build in JS.
+    data.template_fill_dict["jurisdictions"] = ["Foo", "Bar", "Baz"]
 
 
 def fill_templates(params: Params, data: Data):
@@ -273,7 +289,6 @@ def fill_templates(params: Params, data: Data):
     # =============
     data.template_fill_dict["report_date"] = pd.Timestamp.now().date().isoformat()
 
-
     # ===============
 
     _LOGGER.info(f"Loading templates from directory: {params.templates_dir}")
@@ -281,7 +296,6 @@ def fill_templates(params: Params, data: Data):
 
     template = env.get_template("simple_report.html")
     data.index_page_content = template.render(**data.template_fill_dict)
-
 
     # # TESTTTTTT : Export to this wrong place
     # with open(params.templates_dir / "index.html", "w") as f:
@@ -315,6 +329,11 @@ def export_all(params: Params, data: Data):
     # --- Export filled template
     with open(params.pages_build_dir / "index.html", "w") as fp:
         fp.write(data.index_page_content)
+
+    # --- Export the auxiliary data JS file
+    with open(params.pages_build_dir / "aux_data.js", "w") as fp:
+        fp.write(f"const juristiction_trace_index = {json.dumps(data.jur_trace_indices)}\n")
+        fp.write(f"const disease_codes = {json.dumps(data.disease_codes)}\n")
 
     _LOGGER.info("Exports completed")
 

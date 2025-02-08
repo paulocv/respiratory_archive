@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="./simple_report_style.css">
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+
+  <script src="./aux_data.js"></script>
+  <script src="./simple_report_scripts.js"></script>
+
+
   <title>Respiratory Archive Report</title>
 </head>
 
@@ -25,33 +30,59 @@
 
   <hr>
 
-<!-- # # # #OPTION: One tab for each disease (TO BE IMPLEMENTED)-->
-<!--  <div class="tab-container">-->
+  <!-- ========================================== -->
 
-<!--    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, repellat aliquam.</p>-->
-
-<!--    <div id="test-plot">-->
-<!--      {{ test_plot }}-->
-<!--    </div>-->
-
-<!--  </div>-->
-
-<!-- # # # #OPTION: One disease at a time, no tabs-->
   <h1>Hospitalization time series by "as of" dates</h1>
 
+  {# =========== INFLUENZA SECTON ============  #}
   <h2>Influenza</h2>
   <div id="influenza-plot">
-    {{ flu_plot }}
+
+    <div id="flu-plot-controls" class="plot-controls">
+
+      <form>
+        <label for="flu-jurisdiction-select">Jurisdiction</label>
+        <select class="jurisdiction-select" id="flu-jurisdiction-select"></select>
+      </form>
+
+    </div>
+
+    {{ flu_fig }}
+
   </div>
 
+
+  {# =========== COVID-19 SECTON ============  #}
   <h2>COVID-19</h2>
-  <div id="covid-19-plot">
-    {{ c19_plot }}
+  <div id="c19-plot">
+      <div id="c19-plot-controls" class="plot-controls">
+
+      <form>
+        <label for="c19-jurisdiction-select">Jurisdiction</label>
+        <select class="jurisdiction-select" id="c19-jurisdiction-select"></select>
+      </form>
+
+    </div>
+
+    {{ c19_fig }}
+
   </div>
 
+
+  {# =========== RSV SECTON ============  #}
   <h2>RSV (Respiratory Syncytial Virus)</h2>
   <div id="rsv-plot">
-    {{ rsv_plot }}
+      <div id="rsv-plot-controls" class="plot-controls">
+
+      <form>
+        <label for="rsv-jurisdiction-select">Jurisdiction</label>
+        <select class="jurisdiction-select" id="rsv-jurisdiction-select"></select>
+      </form>
+
+    </div>
+
+    {{ rsv_fig }}
+
   </div>
 
 </div>

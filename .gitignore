@@ -171,4 +171,7 @@ cython_debug/
 # MacOS DS_Store
 .DS_Store
 */.DS_Store
+
+# ETC
 /media/respiratory_archive.ai
+/html_templates/plotly_local.js

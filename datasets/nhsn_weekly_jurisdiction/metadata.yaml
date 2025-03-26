@@ -233,5 +233,11 @@ files:
   fetched_on: '2025-03-24T08:49:48.362292-04:00'
   filename: nhsn_2025-03-21.csv
   release: consol
-last_updated: '2025-03-24T08:49:48.362292-04:00'
+- comments: ''
+  data_updated_at: 2025-03-26T15:49:35+0000
+  fetch_trigger: manual
+  fetched_on: '2025-03-26T13:33:53.828988-04:00'
+  filename: nhsn_2025-03-26.csv
+  release: prelim
+last_updated: '2025-03-26T13:33:53.828988-04:00'
 license: Public Domain U.S. Government

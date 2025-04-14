@@ -44,45 +44,12 @@ def main():
         parse_dates=True,
     )
 
-    if export:
-        # filename = f"nhsn_{now.date().isoformat()}.csv"
-        date_str = pd.Timestamp(nhsn_metadata['dataUpdatedAt']).date().isoformat()
-        filename = f"nhsn_{date_str}.csv"
-        arch_fpath = output_dir / filename
-        print(f"Exporting to {arch_fpath}...")
-        if arch_fpath.exists():
-            warnings.warn(f"{arch_fpath} already exists and will be overwritten.")
-        output_dir.mkdir(parents=True, exist_ok=True)
-        nhsn_df.to_csv(arch_fpath, index=False)
-        print("Exporting done.")
+    print(nhsn_df.sort_values("weekendingdate", ascending=False).head())  # WATCHPOINT
 
-        if save_latest:
-            latest_fname = output_dir / f"nhsn_latest.csv"
-            print(f"Exporting to {latest_fname}...")
-            shutil.copy2(
-                src=arch_fpath,
-                dst=latest_fname,
-            )
-            print("Exporting done.")
-
-        if update_metadata:
-            # I'll write everything here because there are many arguments. Then I'll put in a function.
-            entry = dict(
-                filename=filename,
-                fetched_on=now.isoformat(),
-                data_updated_at=nhsn_metadata["dataUpdatedAt"],
-                fetch_trigger=args.fetch_trigger,
-                release=release,
-                comments="",
-            )
-
-            # Update general fields
-            dataset_metadata["last_updated"] = now.isoformat()
-
-            print(f"Exporting metadata...")
-            dataset_metadata["files"].append(entry)
-            save_yaml(output_dir / "metadata.yaml", dataset_metadata)
-            print("Exporting done.")
+    export_outputs(
+        nhsn_metadata, nhsn_df, dataset_metadata, args, now, release,
+        output_dir, export, save_latest, update_metadata
+    )
 
 
 def parse_args():
@@ -161,6 +128,62 @@ def make_nhsn_file_metadata():
     """Create an entry in the metadata file for the NHSN data."""
 
     # return
+
+
+def export_outputs(
+        nhsn_metadata: pd.DataFrame,
+        nhsn_df: pd.DataFrame,
+        dataset_metadata: dict,
+        args,
+        now: pd.Timestamp,
+        release: str,
+        output_dir: Path,
+        export: bool,
+        save_latest: bool,
+        update_metadata: bool,
+):
+    if not export:
+        print("EXPORT SKIPPED")
+        return
+
+    # filename = f"nhsn_{now.date().isoformat()}.csv"
+    date_str = pd.Timestamp(nhsn_metadata['dataUpdatedAt']).date().isoformat()
+    filename = f"nhsn_{date_str}.csv"
+    arch_fpath = output_dir / filename
+    print(f"Exporting to {arch_fpath}...")
+    if arch_fpath.exists():
+        warnings.warn(f"{arch_fpath} already exists and will be overwritten.")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    nhsn_df.to_csv(arch_fpath, index=False)
+    print("Exporting done.")
+
+    if save_latest:
+        latest_fname = output_dir / f"nhsn_latest.csv"
+        print(f"Exporting to {latest_fname}...")
+        shutil.copy2(
+            src=arch_fpath,
+            dst=latest_fname,
+        )
+        print("Exporting done.")
+
+    if update_metadata:
+        # I'll write everything here because there are many arguments. Then I'll put in a function.
+        entry = dict(
+            filename=filename,
+            fetched_on=now.isoformat(),
+            data_updated_at=nhsn_metadata["dataUpdatedAt"],
+            fetch_trigger=args.fetch_trigger,
+            release=release,
+            comments="",
+        )
+
+        # Update general fields
+        dataset_metadata["last_updated"] = now.isoformat()
+
+        print(f"Exporting metadata...")
+        dataset_metadata["files"].append(entry)
+        save_yaml(output_dir / "metadata.yaml", dataset_metadata)
+        print("Exporting done.")
 
 
 if __name__ == "__main__":

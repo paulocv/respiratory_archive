@@ -377,5 +377,11 @@ files:
   fetched_on: '2025-06-18T15:09:56.880032-04:00'
   filename: nhsn_2025-06-18.csv
   release: prelim
-last_updated: '2025-06-18T15:09:56.880032-04:00'
+- comments: 'The NHSN metadata field `dataUpdatedAt` returned `None`. Thus we switched to `updatedAt`.'
+  data_updated_at: 2025-06-20T16:55:19+0000
+  fetch_trigger: manual
+  fetched_on: '2025-06-24T15:31:51.261767-04:00'
+  filename: nhsn_2025-06-20.csv
+  release: consol
+last_updated: '2025-06-24T15:31:51.261767-04:00'
 license: Public Domain U.S. Government

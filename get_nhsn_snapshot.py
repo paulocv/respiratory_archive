@@ -147,7 +147,7 @@ def export_outputs(
         return
 
     # filename = f"nhsn_{now.date().isoformat()}.csv"
-    date_str = pd.Timestamp(nhsn_metadata['dataUpdatedAt']).date().isoformat()
+    date_str = pd.Timestamp(nhsn_metadata['updatedAt']).date().isoformat()
     filename = f"nhsn_{date_str}.csv"
     arch_fpath = output_dir / filename
     print(f"Exporting to {arch_fpath}...")
@@ -171,7 +171,7 @@ def export_outputs(
         entry = dict(
             filename=filename,
             fetched_on=now.isoformat(),
-            data_updated_at=nhsn_metadata["dataUpdatedAt"],
+            data_updated_at=nhsn_metadata["updatedAt"],
             fetch_trigger=args.fetch_trigger,
             release=release,
             comments="",

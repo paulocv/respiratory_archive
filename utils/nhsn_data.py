@@ -110,12 +110,12 @@ def get_latest_nhsn_url_and_metadata() -> str:
     # Querry each dataset for the last updated date
     prelim_response = send_and_check_request(get_metadata_url("prelim"))
     prelim_json = prelim_response.json()
-    prelim_date_str = prelim_json["dataUpdatedAt"]
+    prelim_date_str = prelim_json["updatedAt"]
     prelim_date = pd.Timestamp(prelim_date_str)
 
     consol_response = send_and_check_request(get_metadata_url("consol"))
     consol_json = consol_response.json()
-    consol_date_str = consol_json["dataUpdatedAt"]
+    consol_date_str = consol_json["updatedAt"]
     consol_date = pd.Timestamp(consol_date_str)
 
     # Pick the latest, return the proper URL

@@ -444,5 +444,11 @@ files:
   fetched_on: '2025-07-28T08:43:00.018995-04:00'
   filename: nhsn_2025-07-25.csv
   release: consol
-last_updated: '2025-07-28T08:43:00.018995-04:00'
+- comments: ''
+  data_updated_at: 2025-07-30T15:33:25+0000
+  fetch_trigger: manual
+  fetched_on: '2025-07-30T14:01:48.339119-04:00'
+  filename: nhsn_2025-07-30.csv
+  release: prelim
+last_updated: '2025-07-30T14:01:48.339119-04:00'
 license: Public Domain U.S. Government

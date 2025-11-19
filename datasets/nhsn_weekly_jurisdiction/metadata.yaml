@@ -552,11 +552,17 @@ files:
   fetched_on: '2025-09-29T09:40:27.288790-04:00'
   filename: nhsn_2025-09-26.csv
   release: consol
-- comments: 'This was the first update after the 2025 US Government shutdown.'
+- comments: This was the first update after the 2025 US Government shutdown.
   data_updated_at: 2025-11-14T16:41:34+0000
   fetch_trigger: manual
   fetched_on: '2025-11-19T09:03:01.920721-05:00'
   filename: nhsn_2025-11-14.csv
   release: consol
-last_updated: '2025-11-19T09:03:01.920721-05:00'
+- comments: ''
+  data_updated_at: 2025-11-19T16:16:18+0000
+  fetch_trigger: manual
+  fetched_on: '2025-11-19T13:28:23.739765-05:00'
+  filename: nhsn_2025-11-19.csv
+  release: prelim
+last_updated: '2025-11-19T13:28:23.739765-05:00'
 license: Public Domain U.S. Government

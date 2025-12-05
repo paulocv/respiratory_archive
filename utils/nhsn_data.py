@@ -103,6 +103,30 @@ _INTEREST_NHSN_FIELDS += [
 
 
 def choose_data_url_and_get_metadata(release):
+    """
+    Choose the appropriate NHSN data URL and retrieve its metadata based on the release type.
+    
+    Parameters
+    ----------
+    release : str
+        The release type to fetch. Options are:
+        - "prelim" or "preliminary": preliminary data release
+        - "consol" or "consolidated": consolidated data release  
+        - "latest": automatically selects the most recently updated release
+        
+    Returns
+    -------
+    tuple
+        A tuple containing (url, metadata_dict, release) where:
+        - url (str): The data request URL for the specified release
+        - metadata_dict (dict): The metadata dictionary from the API
+        - release (str): The normalized release type ("prelim" or "consol")
+        
+    Raises
+    ------
+    ValueError
+        If the release parameter is not one of the recognized values.
+    """
     if release in ["prelim", "preliminary"]:
         url = get_data_url("prelim")
         release = "prelim"

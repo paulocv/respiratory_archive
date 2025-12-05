@@ -262,7 +262,7 @@ def fetch_nhsn_hosp_data(
 
 def make_target_data_from_nhsn(
         nhsn_df, disease="covid",
-        locations_data: Union[str, pd.DataFrame] = "aux_data/us_locations.csv"
+        locations_data: Union[str, Path, pd.DataFrame] = "aux_data/us_locations.csv"
 ) -> pd.DataFrame:
     """Create a hubverse-formatted target data from a fetched NHSN data frame.
 
@@ -277,7 +277,7 @@ def make_target_data_from_nhsn(
         The disease to be used to select the target data. The following
         values are admissible: "covid", "covid19", "covid-19", "c19",
         "influenza", "flu", "rsv".
-    locations_data : Union[str, pd.DataFrame]
+    locations_data : Union[str, Path, pd.DataFrame]
         A path to the locations.csv file or a loaded data frame. If
         not informed, it defaults to "aux_data/us_locations.csv".
 

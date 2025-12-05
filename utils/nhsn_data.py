@@ -102,6 +102,24 @@ _INTEREST_NHSN_FIELDS += [
 ]
 
 
+def choose_data_url_and_get_metadata(release):
+    if release in ["prelim", "preliminary"]:
+        url = get_data_url("prelim")
+        release = "prelim"
+        metadata_dict = send_and_check_request(get_metadata_url("prelim")).json()
+    elif release in ["consol", "consolidated"]:
+        url = get_data_url("consol")
+        release = "consol"
+        metadata_dict = send_and_check_request(get_metadata_url("consol")).json()
+    elif release in ["latest"]:
+        url, metadata_dict, release = get_latest_nhsn_url_and_metadata()
+    else:
+        raise ValueError(
+            f"Unrecognized value for parameter `release`: {release}")
+
+    return url, metadata_dict, release
+
+
 def get_latest_nhsn_url_and_metadata() -> str:
     """Determines which release (preliminary or consolidated) of the
     NHSN data was updated most recently and returns its URL and metadata

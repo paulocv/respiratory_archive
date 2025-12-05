@@ -9,7 +9,7 @@ import warnings
 import pandas as pd
 
 from utils.nhsn_data import (
-    fetch_nhsn_hosp_data, get_latest_nhsn_url_and_metadata, get_data_url, send_and_check_request, get_metadata_url
+    fetch_nhsn_hosp_data, choose_data_url_and_get_metadata
 )
 from utils.yaml_tools import load_yaml, save_yaml
 
@@ -106,26 +106,9 @@ def parse_args():
     return parser.parse_args()
 
 
-def choose_data_url_and_get_metadata(release):
-    if release in ["prelim", "preliminary"]:
-        url = get_data_url("prelim")
-        release = "prelim"
-        metadata_dict = send_and_check_request(get_metadata_url("prelim")).json()
-    elif release in ["consol", "consolidated"]:
-        url = get_data_url("consol")
-        release = "consol"
-        metadata_dict = send_and_check_request(get_metadata_url("consol")).json()
-    elif release in ["latest"]:
-        url, metadata_dict, release = get_latest_nhsn_url_and_metadata()
-    else:
-        raise ValueError(
-            f"Unrecognized value for parameter `release`: {release}")
-
-    return url, metadata_dict, release
-
 
 def make_nhsn_file_metadata():
-    """Create an entry in the metadata file for the NHSN data."""
+    """Create an entry in the metadata file for the NHSN data."""  # TODO
 
     # return
 

@@ -588,5 +588,11 @@ files:
   fetched_on: '2025-12-03T13:02:47.171144-05:00'
   filename: nhsn_2025-12-03.csv
   release: prelim
-last_updated: '2025-12-03T13:02:47.171144-05:00'
+- comments: ''
+  data_updated_at: 2025-12-05T17:34:22+0000
+  fetch_trigger: manual
+  fetched_on: '2025-12-08T09:43:08.431566-05:00'
+  filename: nhsn_2025-12-05.csv
+  release: consol
+last_updated: '2025-12-08T09:43:08.431566-05:00'
 license: Public Domain U.S. Government

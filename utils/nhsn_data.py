@@ -195,6 +195,7 @@ def fetch_nhsn_hosp_data(
         request_url="https://data.cdc.gov/resource/ua7e-t2fy.json",
         entry_limit=100000,
         parse_dates=True,
+        index_fields=None,
         data_fields=None,
         start_date=None,  # TODO IMPLEMENT
 ) -> pd.DataFrame:
@@ -226,24 +227,22 @@ def fetch_nhsn_hosp_data(
     The NHSN API does not provide access to historical data. Therefore, the
     `as_of` parameter is not implemented.
     """
-    data_fields = data_fields or _INTEREST_NHSN_FIELDS
+    if index_fields is None:
+        index_fields = ["weekendingdate", "jurisdiction",]
+    if data_fields is None:
+        data_fields = _INTEREST_NHSN_FIELDS
 
     # Build request options
     # ========================
-    request_fields = [
-        "weekendingdate", "jurisdiction",  # Date, location
-        # # --- New hospitalizations
-        # "totalconfflunewadm",  # New hospitalizations by flu
-        # "totalconfc19newadm",  # New hospitalizations by Covid-19
-        # "totalconfrsvnewadm",  # New hospitalizations by RSV
-    ]
-
-    request_fields += data_fields  # Hospital data fields
+    request_fields: list = index_fields + data_fields
 
     request_params = {
         "$limit": entry_limit,
-        "$select": ",".join(request_fields)
+        # "$select": ",".join(request_fields)
     }
+    # Add fields to select, otherwise keep empty
+    if len(request_fields) > 0:
+        request_params["$select"] = ",".join(request_fields)
 
     # Send request to the API
     # ========================

@@ -804,7 +804,7 @@ files:
   fetched_on: '2026-04-13T08:56:34.725250-04:00'
   filename: nhsn_2026-04-10.csv
   release: consol
-- comments: 'Manually added via PR. Value of `fetched_on` is guessed.'
+- comments: Manually added via PR. Value of `fetched_on` is guessed.
   fetch_trigger: manual
   fetched_on: '2026-04-15T15:00:00.000000-04:00'
   filename: nhsn_2026-04-15.csv
@@ -857,5 +857,11 @@ files:
   fetched_on: '2026-05-13T12:37:36.653249-04:00'
   filename: nhsn_2026-05-13.csv
   release: prelim
-last_updated: '2026-05-13T12:37:36.653249-04:00'
+- comments: ''
+  data_updated_at: 2026-05-15T13:44:48+0000
+  fetch_trigger: manual
+  fetched_on: '2026-05-15T16:52:58.163287-04:00'
+  filename: nhsn_2026-05-15.csv
+  release: consol
+last_updated: '2026-05-15T16:52:58.163287-04:00'
 license: Public Domain U.S. Government

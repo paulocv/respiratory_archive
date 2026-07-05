@@ -44,7 +44,7 @@ jobs:
         run: |
             echo "Triggered event: ${{github.event.action}}"
             echo "Running python script to fetch NHSN data"
-            python get_nhsn_snapshot.py --release prelim
+            python get_nhsn_snapshot.py --release latest
 
       - name: Commit changes
         uses: EndBug/add-and-commit@v9

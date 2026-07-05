@@ -935,5 +935,11 @@ files:
   fetched_on: '2026-06-26T17:04:48.304207-04:00'
   filename: nhsn_2026-06-26.csv
   release: consol
-last_updated: '2026-06-26T17:04:48.304207-04:00'
+- comments: 'Manually switched to `prelim` due to missed timing.'
+  data_updated_at: 2026-07-01T14:38:35+0000
+  fetch_trigger: manual
+  fetched_on: '2026-07-05T08:33:22.108878-04:00'
+  filename: nhsn_2026-07-01.csv
+  release: prelim
+last_updated: '2026-07-05T08:33:22.108878-04:00'
 license: Public Domain U.S. Government

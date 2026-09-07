@@ -1049,5 +1049,11 @@ files:
   fetched_on: '2026-09-03T08:50:44.216019-04:00'
   filename: nhsn_2026-09-02.csv
   release: prelim
-last_updated: '2026-09-03T08:50:44.216019-04:00'
+- comments: ''
+  data_updated_at: 2026-09-04T15:05:38+0000
+  fetch_trigger: manual
+  fetched_on: '2026-09-07T08:38:36.195735-04:00'
+  filename: nhsn_2026-09-04.csv
+  release: consol
+last_updated: '2026-09-07T08:38:36.195735-04:00'
 license: Public Domain U.S. Government

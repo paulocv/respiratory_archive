@@ -1,7 +1,5 @@
 # Repiratory Diseases Data Archive
 
-[![Respiratory Archive](./media/check_report_btn.png)](https://paulocv.github.io/respiratory_archive/)
-
 [https://paulocv.github.io/respiratory_archive/](https://paulocv.github.io/respiratory_archive/)
 
 Repiratory diseases achived data. Aimed to help research on forecasting NHSN data.
